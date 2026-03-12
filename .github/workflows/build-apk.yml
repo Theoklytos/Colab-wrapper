@@ -39,6 +39,13 @@ jobs:
           restore-keys: |
             gradle-
 
+      - name: Download gradle-wrapper.jar
+        run: |
+          GRADLE_VERSION=$(grep distributionUrl android/gradle/wrapper/gradle-wrapper.properties \
+            | sed 's/.*gradle-\(.*\)-bin.zip/\1/')
+          JAR_URL="https://raw.githubusercontent.com/gradle/gradle/v${GRADLE_VERSION}/gradle/wrapper/gradle-wrapper.jar"
+          curl -fsSL "$JAR_URL" -o android/gradle/wrapper/gradle-wrapper.jar
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
