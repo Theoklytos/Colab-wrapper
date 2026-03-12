@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.colabwrapper"
-        minSdk 24           // Android 7.0 — covers Samsung A17
+        minSdk 26           // Android 8.0+ — adaptive icons require API 26; Samsung A17 is API 34
         targetSdk 34
         versionCode 1
         versionName "1.0.0"

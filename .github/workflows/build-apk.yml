@@ -9,7 +9,7 @@ on:
   pull_request:
     paths:
       - "android/**"
-  workflow_dispatch:  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,24 +20,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: "21"
+          java-version: "17"
           distribution: "temurin"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      # Install Gradle 8.6 binary directly — no wrapper jar needed
+      - name: Install Gradle 8.6
+        run: |
+          GRADLE_VERSION=8.6
+          curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+            -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /opt/gradle
+          echo "/opt/gradle/gradle-${GRADLE_VERSION}/bin" >> $GITHUB_PATH
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+      # The runner has Android SDK at ANDROID_HOME already.
+      # Explicitly ensure the exact platform + build-tools we compile against are present.
+      - name: Install Android SDK components
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            "platforms;android-34" \
+            "build-tools;34.0.0" \
+            "platform-tools" \
+            --sdk_root="$ANDROID_HOME" 2>/dev/null || true
+
+      # AGP needs sdk.dir — env var alone isn't enough for all Gradle plugin versions
+      - name: Create local.properties
+        run: echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+
+      - name: Cache Gradle home
+        uses: actions/cache@v4
         with:
-          gradle-version: "8.6"
-          cache-read-only: false
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('android/**/*.gradle*') }}
+          restore-keys: gradle-
 
       - name: Build debug APK
         working-directory: android
-        run: gradle assembleDebug --no-daemon
+        run: gradle assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -47,16 +68,16 @@ jobs:
           retention-days: 30
 
       - name: Post APK info to summary
+        if: success()
         run: |
           APK_PATH="android/app/build/outputs/apk/debug/app-debug.apk"
           APK_SIZE=$(du -sh "$APK_PATH" | cut -f1)
           echo "## APK Build Successful" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
           echo "| | |" >> $GITHUB_STEP_SUMMARY
           echo "|---|---|" >> $GITHUB_STEP_SUMMARY
           echo "| **File** | app-debug.apk |" >> $GITHUB_STEP_SUMMARY
           echo "| **Size** | $APK_SIZE |" >> $GITHUB_STEP_SUMMARY
           echo "| **Build** | #${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Commit** | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Download the APK from the **Artifacts** section above, transfer it to your Samsung A17, and install it." >> $GITHUB_STEP_SUMMARY
+          echo "Download from the **Artifacts** section above and install on your Samsung A17." >> $GITHUB_STEP_SUMMARY
