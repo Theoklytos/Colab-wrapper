@@ -1,0 +1,10 @@
+The gradle-wrapper.jar binary is not committed to this repo.
+GitHub Actions uses `android-actions/setup-android` which provides Gradle,
+so the wrapper jar is not needed in CI.
+
+For local builds in Android Studio, Android Studio automatically provides
+the Gradle wrapper. You do not need to download this manually.
+
+If you need it for local CLI builds outside Android Studio:
+  gradle wrapper --gradle-version 8.6
+(requires Gradle installed locally)
