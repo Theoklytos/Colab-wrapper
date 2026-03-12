@@ -1,0 +1,359 @@
+/* colab-mobile.css — Mobile CSS overrides for Google Colab
+ * Target device: Samsung Galaxy A17 (1080×2340px, 385 PPI, 90Hz)
+ * Injected via bookmarklet into https://colab.research.google.com
+ * Browser: Chrome for Android (latest)
+ *
+ * Stack order: colab-mobile.css → colab-amoled.css (optional) → colab-font.css (optional)
+ *
+ * NOTE: Colab uses Angular + Material. Class names are stable at the semantic
+ * level (e.g. .cell, .CodeMirror) but generated Angular classes (e.g. _nghost-*)
+ * change with each deploy. Target semantic and aria attributes where possible.
+ */
+
+/* ================================================================
+ * 1. GLOBAL — Remove desktop min-width constraints
+ * ================================================================ */
+
+body,
+.notebook-container,
+#notebook,
+[id="notebook"],
+colab-shell {
+  min-width: unset !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* ================================================================
+ * 2. TOP TOOLBAR — Compact for mobile
+ * Desktop toolbar is 64px with many hover-only icons.
+ * We compact vertically, increase individual touch targets.
+ * ================================================================ */
+
+/* Toolbar container */
+#top-toolbar,
+.colab-notebook-toolbar,
+.notebook-toolbar-container,
+[data-testid="toolbar"] {
+  height: 52px !important;
+  min-height: 52px !important;
+  padding: 0 8px !important;
+}
+
+/* All toolbar buttons */
+#top-toolbar button,
+.colab-notebook-toolbar button,
+.toolbar-button {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* Menu bar items (File, Edit, View, etc.) */
+.menu-bar-item,
+[role="menuitem"].menu-bar-item {
+  font-size: 14px !important;
+  padding: 0 8px !important;
+  min-height: 44px !important;
+}
+
+/* Hide desktop-only menu items to save space */
+.menu-bar-item[data-title="Edit"],
+.menu-bar-item[aria-label="Edit"],
+.menu-bar-item[data-title="View"],
+.menu-bar-item[aria-label="View"],
+.menu-bar-item[data-title="Insert"],
+.menu-bar-item[aria-label="Insert"],
+.toolbar-separator {
+  display: none !important;
+}
+
+/* Run all button — make it prominent */
+[aria-label="Run all cells"],
+[data-title="Run all"],
+#run-all-btn {
+  border-radius: 22px !important;
+  padding: 0 16px !important;
+  min-height: 44px !important;
+  font-size: 14px !important;
+}
+
+/* ================================================================
+ * 3. CELL LAYOUT
+ * ================================================================ */
+
+/* Cell container */
+.cell,
+.cell.code,
+.cell.text {
+  margin: 6px 0 !important;
+  border-radius: 12px !important;
+}
+
+/* Remove the left gutter (line numbers) — saves ~40px horizontal space */
+.cell .inputarea .CodeMirror-gutters,
+.cell .inputarea .cm-gutters {
+  display: none !important;
+}
+
+/* Run button — large touch target, sticky positioning */
+.run-button,
+colab-run-button,
+[data-testid="run-button"],
+[aria-label="Run cell"] {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* Cell toolbar (add text/code below) */
+.add-cell-toolbar,
+.notebook-bottom-toolbar {
+  min-height: 52px !important;
+}
+
+/* "Add code" / "Add text" buttons */
+.add-cell-toolbar button,
+.notebook-bottom-toolbar button {
+  min-height: 44px !important;
+  min-width: 100px !important;
+  font-size: 14px !important;
+}
+
+/* ================================================================
+ * 4. CODE EDITOR — CodeMirror 6
+ * ================================================================ */
+
+/* Editor container */
+.cell .inputarea .CodeMirror,
+.cell .inputarea .cm-editor,
+.cm-editor {
+  font-size: 15px !important;      /* ~1mm character height at 385 PPI — readable */
+  line-height: 1.6 !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace !important;
+}
+
+/* Editor content padding */
+.cell .inputarea .cm-content,
+.cell .inputarea .CodeMirror-lines,
+.cm-content {
+  padding: 12px !important;
+}
+
+/* Horizontal scroll for long lines */
+.cm-scroller,
+.CodeMirror-scroll {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Touch-friendly scrollbars */
+.cm-scroller::-webkit-scrollbar,
+.CodeMirror-scroll::-webkit-scrollbar {
+  height: 6px !important;
+  width: 6px !important;
+}
+
+.cm-scroller::-webkit-scrollbar-thumb,
+.CodeMirror-scroll::-webkit-scrollbar-thumb {
+  border-radius: 3px !important;
+}
+
+/* Autocomplete popup — large enough to tap */
+.cm-tooltip,
+.cm-tooltip-autocomplete,
+.CodeMirror-hints {
+  font-size: 15px !important;
+  max-height: 40vh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.cm-completionLabel,
+.CodeMirror-hint {
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 8px 12px !important;
+}
+
+/* ================================================================
+ * 5. OUTPUT CELLS
+ * ================================================================ */
+
+.output,
+.output-area,
+.cell-output,
+[class*="output_area"] {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Images: never overflow horizontally */
+.output img,
+.output-area img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* DataFrames / tables: horizontal scroll */
+.output table,
+.output-area table,
+.dataframe {
+  display: block !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+}
+
+/* Error tracebacks */
+.output .ansi-red-fg,
+.output-area .ansi-red-fg {
+  font-size: 13px !important;
+}
+
+/* ================================================================
+ * 6. MARKDOWN / TEXT CELLS
+ * ================================================================ */
+
+.text_cell_render,
+.cell-output-text,
+[class*="text-cell"] .markdown,
+.markdown-output {
+  font-size: 16px !important;
+  line-height: 1.75 !important;
+  padding: 12px 16px !important;
+}
+
+.text_cell_render h1,
+.markdown-output h1 { font-size: 1.6rem !important; }
+
+.text_cell_render h2,
+.markdown-output h2 { font-size: 1.3rem !important; }
+
+.text_cell_render h3,
+.markdown-output h3 { font-size: 1.1rem !important; }
+
+.text_cell_render code,
+.markdown-output code {
+  font-size: 14px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+}
+
+.text_cell_render pre code,
+.markdown-output pre code {
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+/* ================================================================
+ * 7. LEFT SIDEBAR — Table of Contents, Variables, Files
+ * On mobile: hide by default, slide in when toggled.
+ * ================================================================ */
+
+#left-sidebar,
+.colab-left-pane,
+.colab-offscreen-toast-container {
+  width: min(280px, 85vw) !important;
+}
+
+/* ================================================================
+ * 8. KEYBOARD & VIEWPORT
+ * ================================================================ */
+
+/* dvh: recomputes when Samsung gesture bar appears/disappears */
+#notebook,
+.notebook-container {
+  height: 100dvh !important;
+  overflow-y: auto !important;
+}
+
+/* Ensure active cell is not covered by virtual keyboard */
+.cell.focused,
+.cell:focus-within,
+.cell.selected {
+  scroll-margin-bottom: 220px !important;
+}
+
+/* ================================================================
+ * 9. GLOBAL TOUCH TARGET ENFORCEMENT
+ * Every interactive element must be at least 44px in both dimensions.
+ * ================================================================ */
+
+button:not([style*="width"]),
+[role="button"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+a.tab-link,
+.colab-button,
+.md-button {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  cursor: pointer !important;
+}
+
+/* Remove hover-only tooltips that get stuck open on mobile */
+[data-tooltip]:hover::after,
+[data-tooltip]:hover::before,
+[title]:not(abbr):hover::after {
+  display: none !important;
+}
+
+/* ================================================================
+ * 10. FILE BROWSER
+ * ================================================================ */
+
+.colab-file-list-item,
+.colab-filebrowser-entry,
+[class*="file-list"] li {
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+  cursor: pointer !important;
+}
+
+/* ================================================================
+ * 11. DROPDOWNS AND MENUS
+ * ================================================================ */
+
+[role="menu"],
+.colab-dropdown-menu,
+.mat-menu-panel {
+  font-size: 16px !important;
+}
+
+[role="menuitem"],
+.mat-menu-item {
+  min-height: 52px !important;
+  padding: 0 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  font-size: 15px !important;
+}
+
+/* ================================================================
+ * 12. INJECTED NOTIFICATION TOAST
+ * ================================================================ */
+
+#colab-mobile-css-toast {
+  position: fixed !important;
+  bottom: 80px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: #f9ab00 !important;
+  color: #000 !important;
+  padding: 10px 20px !important;
+  border-radius: 24px !important;
+  font-family: system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  z-index: 999999 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}

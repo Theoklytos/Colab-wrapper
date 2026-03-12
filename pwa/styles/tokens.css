@@ -1,0 +1,187 @@
+/* tokens.css — Design system for Colab Mobile
+ * Optimized for Samsung Galaxy A17: 1080×2340px, 385 PPI, Super AMOLED, 90Hz
+ */
+
+:root {
+  /* ── Typography ── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.875rem;   /* 14px */
+  --text-base: 1rem;       /* 16px — minimum for legibility at 385 PPI */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+
+  /* ── Touch targets ──
+   * Android HIG minimum: 48px.
+   * Samsung A17 has a large display, we use 52px for comfort.
+   */
+  --touch-min:  3rem;      /* 48px */
+  --touch-safe: 3.25rem;   /* 52px */
+  --touch-lg:   3.5rem;    /* 56px */
+
+  /* ── Spacing (4px base grid) ── */
+  --sp-1:  0.25rem;   /* 4px  */
+  --sp-2:  0.5rem;    /* 8px  */
+  --sp-3:  0.75rem;   /* 12px */
+  --sp-4:  1rem;      /* 16px */
+  --sp-5:  1.25rem;   /* 20px */
+  --sp-6:  1.5rem;    /* 24px */
+  --sp-8:  2rem;      /* 32px */
+  --sp-10: 2.5rem;    /* 40px */
+  --sp-12: 3rem;      /* 48px */
+
+  /* ── Border radius ── */
+  --radius-sm:   0.375rem;  /* 6px */
+  --radius-md:   0.75rem;   /* 12px */
+  --radius-lg:   1rem;      /* 16px */
+  --radius-xl:   1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* ── Safe area insets ──
+   * Samsung A17 gesture bar ≈ 34px portrait, 0px landscape.
+   * Fallback values used when env() returns 0 (desktop / unsupported browsers).
+   */
+  --safe-top:    env(safe-area-inset-top,    24px);
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+  --safe-left:   env(safe-area-inset-left,    0px);
+  --safe-right:  env(safe-area-inset-right,   0px);
+
+  /* ── Layout ── */
+  --header-height: 3.5rem;   /* 56px */
+  --nav-height:    calc(var(--touch-lg) + var(--safe-bottom));
+
+  /* ── Transitions ──
+   * Samsung A17 @ 90Hz = 11ms per frame.
+   * Fast transitions < 3 frames (33ms). Normal < 20 frames (220ms).
+   */
+  --ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast:    120ms;
+  --dur-normal:  200ms;
+  --dur-slow:    350ms;
+
+  /* ── Z-index layers ── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-sticky:  20;
+  --z-overlay: 100;
+  --z-modal:   200;
+  --z-toast:   300;
+}
+
+/* ══════════════════════════════════════════════════════════
+ * Dark theme (default)
+ * Not pure #000000 to avoid AMOLED haloing around bright text.
+ * AMOLED variant below uses true black.
+ * ══════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg-primary:    #0a0a0a;
+  --color-bg-secondary:  #111111;
+  --color-bg-card:       #141414;
+  --color-bg-elevated:   #1e1e1e;
+
+  --color-border:        #2a2a2a;
+  --color-border-subtle: #1c1c1c;
+
+  --color-text-primary:  #f0f0f0;
+  --color-text-secondary:#9a9a9a;
+  --color-text-tertiary: #555555;
+
+  /* Colab orange accent */
+  --color-accent:        #f9ab00;
+  --color-accent-dim:    rgba(249, 171, 0, 0.14);
+  --color-accent-text:   #000000;
+
+  --color-success:       #4ade80;
+  --color-success-dim:   rgba(74, 222, 128, 0.12);
+  --color-warning:       #fb923c;
+  --color-error:         #f87171;
+  --color-info:          #60a5fa;
+
+  --color-session-active: #4ade80;
+  --color-session-idle:   #fb923c;
+  --color-session-none:   #444444;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.5);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.55);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.65);
+}
+
+/* ══════════════════════════════════════════════════════════
+ * AMOLED variant — true black (pixels physically off)
+ * ══════════════════════════════════════════════════════════ */
+[data-theme="amoled"] {
+  color-scheme: dark;
+
+  --color-bg-primary:    #000000;
+  --color-bg-secondary:  #000000;
+  --color-bg-card:       #0a0a0a;
+  --color-bg-elevated:   #111111;
+
+  --color-border:        #1a1a1a;
+  --color-border-subtle: #111111;
+
+  --color-text-primary:  #f0f0f0;
+  --color-text-secondary:#9a9a9a;
+  --color-text-tertiary: #555555;
+
+  --color-accent:        #f9ab00;
+  --color-accent-dim:    rgba(249, 171, 0, 0.12);
+  --color-accent-text:   #000000;
+
+  --color-success:       #4ade80;
+  --color-success-dim:   rgba(74, 222, 128, 0.10);
+  --color-warning:       #fb923c;
+  --color-error:         #f87171;
+  --color-info:          #60a5fa;
+
+  --color-session-active: #4ade80;
+  --color-session-idle:   #fb923c;
+  --color-session-none:   #333333;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.7);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.75);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.85);
+}
+
+/* ══════════════════════════════════════════════════════════
+ * Light theme
+ * ══════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-bg-primary:    #fafafa;
+  --color-bg-secondary:  #f3f4f6;
+  --color-bg-card:       #ffffff;
+  --color-bg-elevated:   #ffffff;
+
+  --color-border:        #e5e7eb;
+  --color-border-subtle: #f0f0f0;
+
+  --color-text-primary:  #111111;
+  --color-text-secondary:#555555;
+  --color-text-tertiary: #9a9a9a;
+
+  --color-accent:        #e8710a;
+  --color-accent-dim:    rgba(232, 113, 10, 0.10);
+  --color-accent-text:   #ffffff;
+
+  --color-success:       #16a34a;
+  --color-success-dim:   rgba(22, 163, 74, 0.10);
+  --color-warning:       #ea580c;
+  --color-error:         #dc2626;
+  --color-info:          #2563eb;
+
+  --color-session-active: #16a34a;
+  --color-session-idle:   #ea580c;
+  --color-session-none:   #9ca3af;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.10);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+}

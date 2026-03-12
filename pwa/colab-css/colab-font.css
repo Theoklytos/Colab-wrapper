@@ -1,0 +1,95 @@
+/* colab-font.css — Font scaling for Samsung Galaxy A17 (385 PPI)
+ *
+ * At 385 PPI, 1 CSS pixel = 2.75 device pixels.
+ * Colab's default font sizes are optimized for ~100 PPI desktop monitors.
+ * At 385 PPI viewing distance (~30cm for a phone), we increase base sizes.
+ *
+ * Recommended viewing distance: 25–35cm
+ * Target character height: ~1mm = ~15px at 385 PPI CSS px
+ *
+ * Stack order (all optional):
+ *   colab-mobile.css → colab-amoled.css → colab-font.css
+ */
+
+/* ── Code editor — already set to 15px in colab-mobile.css ── */
+/* This file provides an enhanced 16px variant for users who want larger code */
+
+.cm-editor,
+.cm-editor .cm-content,
+.CodeMirror,
+.CodeMirror-lines {
+  font-size: 16px !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* ── Output / REPL text ── */
+.output,
+.output-area,
+[class*="output_area"] {
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+/* ── Markdown / text cells ── */
+.text_cell_render,
+.markdown-output {
+  font-size: 17px !important;
+  line-height: 1.8 !important;
+}
+
+.text_cell_render h1 { font-size: 1.75rem !important; }
+.text_cell_render h2 { font-size: 1.4rem !important;  }
+.text_cell_render h3 { font-size: 1.15rem !important; }
+
+.text_cell_render p,
+.markdown-output p {
+  font-size: 17px !important;
+  line-height: 1.8 !important;
+}
+
+.text_cell_render code,
+.markdown-output code {
+  font-size: 15px !important;
+}
+
+/* ── Menu and toolbar text ── */
+.menu-bar-item,
+[role="menuitem"],
+.mat-menu-item,
+.colab-button {
+  font-size: 15px !important;
+}
+
+/* ── Error messages ── */
+.ansi-red-fg,
+.output-area pre,
+.output pre {
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+/* ── Autocomplete ── */
+.cm-tooltip,
+.cm-tooltip-autocomplete,
+.CodeMirror-hints {
+  font-size: 16px !important;
+}
+
+.cm-completionLabel,
+.CodeMirror-hint {
+  font-size: 15px !important;
+  padding: 10px 14px !important;
+  min-height: 48px !important;
+}
+
+/* ── Table output ── */
+.dataframe,
+.output table {
+  font-size: 14px !important;
+}
+
+.dataframe th,
+.dataframe td {
+  padding: 8px 12px !important;
+}

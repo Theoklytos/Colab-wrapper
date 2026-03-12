@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <!-- viewport-fit=cover: include safe areas (camera cutout, gesture bar) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- theme-color: #000000 → AMOLED status bar pixels turn off → battery saving -->
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Mobile-optimized Google Colab launcher with session persistence and CSS enhancement">
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+
+  <!-- Google Fonts — Inter for UI, JetBrains Mono for code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/animations.css">
+
+  <title>Colab Mobile</title>
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── Header ──────────────────────────────────────── -->
+    <header class="app-header" role="banner">
+      <div class="header-content">
+        <div class="logo-group">
+          <svg class="header-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#F9AB00"/>
+            <path d="M8 10h16M8 16h10M8 22h13" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="25" cy="22" r="3" fill="#000"/>
+          </svg>
+          <span class="header-title">Colab Mobile</span>
+        </div>
+        <div class="header-actions">
+          <button id="theme-toggle" class="icon-btn" aria-label="Toggle AMOLED mode" title="Toggle AMOLED true-black">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Main scroll area ─────────────────────────────── -->
+    <main class="app-main" id="main-content" role="main">
+
+      <!-- Session status banner -->
+      <section class="session-banner" id="session-banner" aria-live="polite" aria-label="Session status">
+        <div class="session-indicator">
+          <span class="session-dot" id="session-dot"></span>
+          <span class="session-label" id="session-label">No active session</span>
+        </div>
+        <time class="session-elapsed" id="session-elapsed" hidden></time>
+      </section>
+
+      <!-- ── Quick Launch ──── -->
+      <section class="section" aria-labelledby="launch-heading">
+        <h2 class="section-title" id="launch-heading">Open Colab</h2>
+        <div class="action-grid">
+
+          <button class="action-card action-card--primary" id="open-colab-btn"
+                  data-url="https://colab.research.google.com"
+                  aria-label="Open Colab home — Drive and recent notebooks">
+            <div class="action-card__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8 8h8M8 12h5M8 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="action-card__text">
+              <span class="action-card__label">Colab Home</span>
+              <span class="action-card__sublabel">Drive + Recent</span>
+            </div>
+          </button>
+
+          <button class="action-card" id="new-notebook-btn"
+                  data-url="https://colab.research.google.com/#create=true"
+                  aria-label="New notebook">
+            <div class="action-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="action-card__label">New Notebook</span>
+            <span class="action-card__sublabel">Python 3</span>
+          </button>
+
+          <button class="action-card" id="drive-btn"
+                  data-url="https://drive.google.com/drive/my-drive"
+                  aria-label="Google Drive — browse notebooks">
+            <div class="action-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 17.5L8.5 8l5 9H3zM12 17.5l4.5-9 4.5 9H12zM8.5 8l4 7" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="action-card__label">Google Drive</span>
+            <span class="action-card__sublabel">Browse .ipynb</span>
+          </button>
+
+          <button class="action-card" id="github-btn"
+                  data-url="https://colab.research.google.com/github"
+                  aria-label="Open from GitHub">
+            <div class="action-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="action-card__label">From GitHub</span>
+            <span class="action-card__sublabel">Import .ipynb</span>
+          </button>
+
+        </div>
+      </section>
+
+      <!-- ── Recent Notebooks (user-stored URLs) ──── -->
+      <section class="section" id="recent-section" aria-labelledby="recent-heading">
+        <div class="section-header">
+          <h2 class="section-title" id="recent-heading">Recent</h2>
+          <button class="link-btn" id="add-notebook-btn" aria-label="Add notebook URL">+ Add</button>
+        </div>
+        <div class="recent-list" id="recent-list" role="list">
+          <!-- Populated by app.js from localStorage -->
+          <div class="empty-state" id="recent-empty">
+            <span class="empty-state__text">No recent notebooks yet</span>
+            <span class="empty-state__hint">Tap "Open Colab" above, then add your notebooks here</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Add notebook dialog (hidden by default) -->
+      <div class="add-notebook-dialog" id="add-notebook-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="add-dialog-title">
+        <div class="dialog-content">
+          <h3 class="dialog-title" id="add-dialog-title">Add Notebook</h3>
+          <label class="input-label" for="notebook-url-input">Colab notebook URL</label>
+          <input type="url" id="notebook-url-input" class="text-input"
+                 placeholder="https://colab.research.google.com/drive/..."
+                 autocomplete="off" spellcheck="false">
+          <label class="input-label" for="notebook-name-input">Name (optional)</label>
+          <input type="text" id="notebook-name-input" class="text-input"
+                 placeholder="My notebook">
+          <div class="dialog-actions">
+            <button class="btn-ghost" id="add-dialog-cancel">Cancel</button>
+            <button class="btn-primary" id="add-dialog-save">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Bookmarklet (CSS Injector) ──── -->
+      <section class="section" aria-labelledby="bookmarklet-heading">
+        <h2 class="section-title" id="bookmarklet-heading">Mobile CSS Enhancer</h2>
+        <div class="bookmarklet-card">
+
+          <div class="bookmarklet-status" id="bookmarklet-status">
+            <div class="status-badge status-badge--info">CSS</div>
+            <div class="status-text">
+              <strong>Inject mobile-optimized CSS into Colab</strong>
+              <span>Bigger touch targets, readable fonts, AMOLED dark mode</span>
+            </div>
+          </div>
+
+          <div class="variant-selector" role="group" aria-label="CSS variant">
+            <button class="chip chip--active" data-variant="mobile">Mobile</button>
+            <button class="chip" data-variant="amoled">AMOLED</button>
+            <button class="chip" data-variant="font">Font</button>
+            <button class="chip" data-variant="all">All</button>
+          </div>
+
+          <div class="step-list">
+            <details class="step" open>
+              <summary class="step__summary">
+                <span class="step__num">1</span>
+                <span class="step__title">Copy the bookmarklet</span>
+                <span class="step__chevron" aria-hidden="true">›</span>
+              </summary>
+              <div class="step__body">
+                <p class="step__desc">Tap the button below to copy the bookmarklet code to your clipboard.</p>
+                <button class="btn-primary" id="copy-bookmarklet-btn">Copy Bookmarklet</button>
+                <div class="code-preview" id="bookmarklet-preview" aria-label="Bookmarklet preview"></div>
+              </div>
+            </details>
+
+            <details class="step">
+              <summary class="step__summary">
+                <span class="step__num">2</span>
+                <span class="step__title">Save it as a bookmark</span>
+                <span class="step__chevron" aria-hidden="true">›</span>
+              </summary>
+              <div class="step__body">
+                <ol class="instructions">
+                  <li>In Chrome, bookmark any page (e.g. google.com)</li>
+                  <li>Tap the star → <strong>Edit</strong></li>
+                  <li>Set Name: <em>"Colab CSS"</em></li>
+                  <li>Set URL: paste the copied code</li>
+                  <li>Save to Bookmarks Bar</li>
+                </ol>
+              </div>
+            </details>
+
+            <details class="step">
+              <summary class="step__summary">
+                <span class="step__num">3</span>
+                <span class="step__title">Run it on Colab</span>
+                <span class="step__chevron" aria-hidden="true">›</span>
+              </summary>
+              <div class="step__body">
+                <p class="step__desc">When Colab is open in Chrome, tap the address bar, type <em>"Colab CSS"</em>, and tap the bookmark. Mobile styles apply instantly. Tap again to toggle off.</p>
+              </div>
+            </details>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── Session Persistence ──── -->
+      <section class="section" aria-labelledby="session-heading">
+        <h2 class="section-title" id="session-heading">Session Persistence</h2>
+        <div class="settings-card">
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">Screen Wake Lock</span>
+              <span class="toggle-desc">Keeps screen on while this app is open — prevents Colab tab from being killed</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="wake-lock-toggle" role="switch" aria-label="Screen Wake Lock">
+              <span class="toggle-track" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">Session Heartbeat</span>
+              <span class="toggle-desc">Records activity every 4 min to track session duration</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="heartbeat-toggle" role="switch" aria-label="Session Heartbeat">
+              <span class="toggle-track" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <div class="info-banner" id="wake-lock-hint" hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Also disable Chrome's Memory Saver for colab.research.google.com in Chrome Settings → Performance for best results.</span>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── Bottom Navigation ────────────────────────────── -->
+    <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+      <button class="nav-item nav-item--active" data-tab="home" aria-current="page" aria-label="Home">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 12L12 3l9 9v9H15v-6H9v6H3z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+        </svg>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-item" data-tab="recent" aria-label="Recent notebooks">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="2" width="13" height="20" rx="2" stroke="currentColor" stroke-width="1.75"/>
+          <path d="M8 7h5M8 11h5M8 15h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="15" y="11" width="5" height="9" rx="1" fill="currentColor" fill-opacity=".2" stroke="currentColor" stroke-width="1.25"/>
+        </svg>
+        <span class="nav-label">Recent</span>
+      </button>
+      <button class="nav-item" data-tab="css" aria-label="CSS Enhancer">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="nav-label">CSS</span>
+      </button>
+      <button class="nav-item" data-tab="settings" aria-label="Settings">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.75"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="1.75"/>
+        </svg>
+        <span class="nav-label">Settings</span>
+      </button>
+    </nav>
+
+    <!-- ── Install Prompt Sheet ─────────────────────────── -->
+    <div class="bottom-sheet" id="install-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="install-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-body">
+        <div class="sheet-icon">
+          <svg width="48" height="48" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#F9AB00"/>
+            <path d="M8 10h16M8 16h10M8 22h13" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="25" cy="22" r="3" fill="#000"/>
+          </svg>
+        </div>
+        <h3 class="sheet-title" id="install-title">Add Colab Mobile to Home Screen</h3>
+        <p class="sheet-desc">Install for instant access, offline support, and session persistence.</p>
+        <button class="btn-primary btn--full" id="install-accept-btn">Install App</button>
+        <button class="btn-ghost btn--full" id="install-dismiss-btn">Not now</button>
+      </div>
+    </div>
+    <div class="sheet-backdrop" id="sheet-backdrop" hidden aria-hidden="true"></div>
+
+    <!-- Toast notifications -->
+    <div id="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+  </div><!-- /#app -->
+
+  <!-- Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(reg => {
+            console.log('[SW] Registered, scope:', reg.scope);
+            // Check for updates
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                }
+              });
+            });
+          })
+          .catch(err => console.error('[SW] Registration failed:', err));
+      });
+    }
+  </script>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>

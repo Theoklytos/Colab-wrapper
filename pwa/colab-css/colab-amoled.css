@@ -1,0 +1,202 @@
+/* colab-amoled.css — True-black AMOLED theme for Google Colab
+ * Target: Samsung Galaxy A17 Super AMOLED display
+ *
+ * Stack AFTER colab-mobile.css:
+ *   1. colab-mobile.css   (layout + touch targets)
+ *   2. colab-amoled.css   (this file — color overrides)
+ *
+ * Why #000000 matters:
+ * On Super AMOLED, black pixels are physically turned off.
+ * #000000 backgrounds = zero power draw for those pixels.
+ * Colab's default dark mode uses #1e1e1e — visible pixels.
+ * This overlay replaces all dark backgrounds with true black.
+ */
+
+/* ── Body and notebook background ── */
+body.dark-theme,
+body[data-theme="dark"],
+body.darkmode,
+body {
+  background: #000000 !important;
+  color: #f0f0f0 !important;
+}
+
+/* ── Cell backgrounds ── */
+.cell,
+.cell.code,
+.cell.text,
+.cell.focused,
+.cell.selected,
+.cell:hover {
+  background: #000000 !important;
+  border-color: #1a1a1a !important;
+}
+
+/* ── CodeMirror editor ── */
+.cm-editor,
+.cm-editor .cm-scroller,
+.CodeMirror,
+.CodeMirror-scroll {
+  background: #000000 !important;
+  color: #d4d4d4 !important;
+}
+
+.cm-gutters,
+.CodeMirror-gutters {
+  background: #000000 !important;
+  border-right-color: #1a1a1a !important;
+}
+
+.cm-activeLineGutter,
+.CodeMirror-activeline-gutter {
+  background: #0d0d0d !important;
+}
+
+.cm-activeLine,
+.CodeMirror-activeline-background {
+  background: rgba(255,255,255,0.03) !important;
+}
+
+/* ── Output cells ── */
+.output,
+.output-area,
+[class*="output_area"],
+.output-container {
+  background: #060606 !important;
+  border-color: #1a1a1a !important;
+}
+
+/* ── Toolbar ── */
+#top-toolbar,
+.colab-notebook-toolbar,
+.notebook-toolbar-container {
+  background: #000000 !important;
+  border-bottom-color: #1a1a1a !important;
+  box-shadow: none !important;
+}
+
+/* Toolbar buttons and menu items */
+.menu-bar-item,
+.colab-button,
+.toolbar-button {
+  color: #d4d4d4 !important;
+}
+
+.menu-bar-item:hover,
+.colab-button:hover,
+.toolbar-button:hover {
+  background: rgba(255,255,255,0.06) !important;
+}
+
+/* ── Sidebar (TOC, files, variables) ── */
+#left-sidebar,
+.colab-left-pane,
+#right-sidebar,
+.colab-right-pane {
+  background: #000000 !important;
+  border-color: #1a1a1a !important;
+}
+
+/* ── Tab bar ── */
+.notebook-tab-bar,
+.colab-tab-bar {
+  background: #000000 !important;
+  border-bottom-color: #1a1a1a !important;
+}
+
+.notebook-tab,
+.colab-tab {
+  color: #9a9a9a !important;
+}
+
+.notebook-tab--active,
+.colab-tab--active,
+.notebook-tab[aria-selected="true"] {
+  color: #f9ab00 !important;
+  border-bottom-color: #f9ab00 !important;
+  background: #000000 !important;
+}
+
+/* ── Dropdowns and menus ── */
+[role="menu"],
+.colab-dropdown-menu,
+.mat-menu-panel,
+.cdk-overlay-pane > .mat-menu-panel {
+  background: #0d0d0d !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.85) !important;
+}
+
+[role="menuitem"]:hover,
+.mat-menu-item:hover {
+  background: rgba(255,255,255,0.06) !important;
+}
+
+/* ── Autocomplete tooltip ── */
+.cm-tooltip,
+.cm-tooltip-autocomplete,
+.CodeMirror-hints {
+  background: #0d0d0d !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.75) !important;
+}
+
+.cm-completionLabel,
+.CodeMirror-hint {
+  color: #d4d4d4 !important;
+}
+
+.cm-completionLabel:hover,
+.CodeMirror-hint-active {
+  background: rgba(249,171,0,0.12) !important;
+  color: #f9ab00 !important;
+}
+
+/* ── Dialog / modal panels ── */
+.mat-dialog-container,
+.colab-dialog,
+[role="dialog"] {
+  background: #0a0a0a !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.9) !important;
+}
+
+/* ── Input fields ── */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+  background: #0d0d0d !important;
+  border-color: #2a2a2a !important;
+  color: #f0f0f0 !important;
+}
+
+/* ── Code syntax highlighting — AMOLED-safe variants ── */
+
+/* Strings */
+.cm-string,
+.CodeMirror-string { color: #ce9178 !important; }
+
+/* Keywords */
+.cm-keyword,
+.CodeMirror-keyword { color: #569cd6 !important; }
+
+/* Comments */
+.cm-comment,
+.CodeMirror-comment { color: #6a9955 !important; }
+
+/* Functions */
+.cm-def,
+.CodeMirror-def { color: #dcdcaa !important; }
+
+/* Numbers */
+.cm-number,
+.CodeMirror-number { color: #b5cea8 !important; }
+
+/* Built-ins */
+.cm-builtin { color: #4ec9b0 !important; }
+
+/* Variables */
+.cm-variable { color: #9cdcfe !important; }
+
+/* Operators */
+.cm-operator { color: #d4d4d4 !important; }

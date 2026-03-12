@@ -1,0 +1,113 @@
+/* animations.css — 90Hz-safe animations for Samsung Galaxy A17
+ *
+ * RULE: Only animate `transform` and `opacity`.
+ * These are the only two CSS properties Chrome can animate on the GPU
+ * compositor thread without triggering layout or paint.
+ * At 90Hz (11ms/frame), any paint trigger causes a visible stutter.
+ *
+ * Never animate: width, height, top, left, margin, padding, border, color,
+ * background (non-opacity), font-size, or any property that triggers layout.
+ */
+
+/* ── Entrance animations ── */
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes slide-down {
+  from { transform: translateY(-20px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ── Page load: staggered section entrance ── */
+.section {
+  animation: slide-up 280ms var(--ease-out) both;
+}
+
+.section:nth-child(1) { animation-delay:   0ms; }
+.section:nth-child(2) { animation-delay:  50ms; }
+.section:nth-child(3) { animation-delay: 100ms; }
+.section:nth-child(4) { animation-delay: 150ms; }
+.section:nth-child(5) { animation-delay: 200ms; }
+
+.session-banner {
+  animation: slide-down 240ms var(--ease-out) both;
+}
+
+/* ── Action card press ripple ── */
+.action-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.action-card:active::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Session dot pulse ── */
+@keyframes session-pulse {
+  0%, 100% { transform: scale(1);    opacity: 1;   }
+  50%       { transform: scale(1.35); opacity: 0.4; }
+}
+
+/* ── Bottom sheet ── */
+.bottom-sheet {
+  transform: translateY(100%);
+  transition: transform var(--dur-slow) var(--ease-out);
+  will-change: transform;
+}
+
+.bottom-sheet.is-open {
+  transform: translateY(0);
+  animation: none;
+}
+
+/* ── Sheet backdrop ── */
+.sheet-backdrop {
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.sheet-backdrop.is-open {
+  opacity: 1;
+}
+
+/* ── Notebook item entrance (when added to list) ── */
+.notebook-item {
+  animation: scale-in 200ms var(--ease-out) both;
+}
+
+/* ── Reduced motion: respect user preferences ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto !important;
+  }
+
+  .section { animation: none; }
+  .session-banner { animation: none; }
+}

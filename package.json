@@ -1,0 +1,24 @@
+{
+  "name": "colab-mobile-wrapper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mobile-optimized Google Colab launcher PWA + Android WebView APK",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "icons": "node scripts/generate-icons.js",
+    "bookmarklet": "node scripts/encode-bookmarklet.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
